@@ -1,10 +1,15 @@
 package cinema;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Cinema {
 
     public static void main(String[] args) {
+        prompter();
+    }
+
+    private static void prompter() {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Enter the number of rows:");
@@ -12,19 +17,45 @@ public class Cinema {
         System.out.println("Enter the number of seats in each row:");
         int seats = scanner.nextInt();
 
-        showSeats(rows,seats);
-
         System.out.println();
-        System.out.println("Enter a row number:");
-        int rowNumber = scanner.nextInt();
-        System.out.println("Enter a seat number in that row:");
-        int seatNumber = scanner.nextInt();
 
-        System.out.println();
-        calculateSeatPrice(rows, seats,rowNumber);
 
-        System.out.println();
-        showSeats(rows,seats,rowNumber,seatNumber);
+
+        String[][] seatArrangement = new String[rows][seats];
+        int[] emptySeat = new int[]{0,0};
+
+        while (true){
+            System.out.println(Arrays.deepToString(seatArrangement));
+            System.out.println("1. Show the seats");
+            System.out.println("2. Buy a ticket");
+            System.out.println("0. Exit");
+
+            int choice = scanner.nextInt();
+
+            int rowNumber = 0;
+            int seatNumber = 0;
+
+            if (choice == 1){
+                showSeats(rows,seats, seatArrangement);
+                System.out.println();
+            } else if (choice == 2) {
+                System.out.println();
+                System.out.println("Enter a row number:");
+                rowNumber = scanner.nextInt();
+                System.out.println("Enter a seat number in that row:");
+                seatNumber = scanner.nextInt();
+
+                seatArrangement[rowNumber - 1][seatNumber - 1] = " B";
+
+                System.out.println(Arrays.deepToString(seatArrangement));
+
+                System.out.println();
+                calculateSeatPrice(rows, seats,rowNumber);
+                System.out.println();
+            } else if (choice == 0) {
+                break;
+            }
+        }
 
     }
 
@@ -42,7 +73,7 @@ public class Cinema {
         System.out.println("Ticket price: $" +price);
     }
 
-    private static void showSeats(int rows, int seats, int... rowAndSeatNumber) {
+    private static void showSeats(int rows, int seats, String[][]seatArrangement) {
         System.out.println("Cinema:");
         System.out.print("  ");
         for (int i = 0; i < seats; i++) {
@@ -50,26 +81,16 @@ public class Cinema {
         }
         System.out.println();
 
-        if (rowAndSeatNumber.length ==0){
-            for (int i = 0; i < rows; i++) {
-                System.out.print(i+1);
-                for (int j = 0; j < seats; j++) {
+        for (int i = 0; i < seatArrangement.length; i++) {
+            System.out.print(i + 1);
+            for (int j = 0; j < seatArrangement[i].length; j++) {
+                if (seatArrangement[i][j] == null){
                     System.out.print(" S");
+                }else {
+                    System.out.print(seatArrangement[i][j]);
                 }
-                System.out.println();
             }
-        }else {
-            for (int i = 0; i < rows; i++) {
-                System.out.print(i+1);
-                for (int j = 0; j < seats; j++) {
-                    if (i == rowAndSeatNumber[0] - 1 && j == rowAndSeatNumber[1] - 1){
-                        System.out.print(" B");
-                    } else {
-                        System.out.print(" S");
-                    }
-                }
-                System.out.println();
-            }
+            System.out.println();
         }
 
     }
